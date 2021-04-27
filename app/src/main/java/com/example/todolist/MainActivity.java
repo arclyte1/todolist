@@ -1,14 +1,20 @@
 package com.example.todolist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.todolist.task.Task;
+import com.example.todolist.task.TaskAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.Menu;
@@ -19,14 +25,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
-    private ArrayList<String> items;
-    private ArrayAdapter<String> itemsAdapter;
-    private ListView listView;
+    private ArrayList<Task> tasksList;
+    private TaskAdapter tasksAdapter;
+    private RecyclerView tasksView;
     private Button button;
 
     @Override
@@ -34,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView = findViewById(R.id.listView);
+        tasksView = findViewById(R.id.task_view);
+        tasksView.setLayoutManager(new LinearLayoutManager(this));
         button = findViewById(R.id.button);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -44,21 +50,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        items = new ArrayList<>();
-        itemsAdapter =  new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(itemsAdapter);
-        
-        setUpListViewListener();
-    }
+        tasksList = new ArrayList<>();
+        tasksAdapter =  new TaskAdapter();
+        tasksView.setAdapter(tasksAdapter);
 
-    private void setUpListViewListener() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        tasksView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Context context = getApplicationContext();
-                Toast.makeText(context, "Task removed", Toast.LENGTH_LONG).show();
-                items.remove(position);
-                itemsAdapter.notifyDataSetChanged();
+            public void onClick(View v) {
+                int itemPosition = tasksView.getChildLayoutPosition(v);
+                Task task = tasksList.get(itemPosition);
+                Toast.makeText(getApplicationContext(), task.getTask(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -66,10 +67,14 @@ public class MainActivity extends AppCompatActivity {
     private void addItem(View v) {
         EditText input = findViewById(R.id.editText1);
         String text = input.getText().toString();
+        Task task = new Task(text);
+        tasksList.add(task);
 
         if(!text.equals("")) {
-            itemsAdapter.add(text);
+            tasksAdapter.addItem(task);
             input.setText("");
         }
+
     }
+
 }
