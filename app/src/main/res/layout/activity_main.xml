@@ -23,6 +23,8 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         android:text="@string/button_add_task"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
