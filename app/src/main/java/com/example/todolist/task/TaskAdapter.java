@@ -1,4 +1,4 @@
-    package com.example.todolist.task;
+package com.example.todolist.task;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +17,14 @@ import com.example.todolist.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    private ArrayList<Task> taskList = new ArrayList<>();
+    private List<Task> taskList = new ArrayList<>();
     private OnTaskListener onTaskListener;
 
-    public TaskAdapter(ArrayList<Task> taskList, OnTaskListener onTaskListener) {
-        this.taskList.addAll(taskList);
+    public TaskAdapter(OnTaskListener onTaskListener) {
         this.onTaskListener = onTaskListener;
     }
 
@@ -66,6 +66,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 @Override
                 public void onClick(View v) {
                     task.setCompleted(((CheckBox) v).isChecked());
+                    onTaskListener.onCompleteClick(getAdapterPosition());
                 }
             });
         }
@@ -78,6 +79,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public interface OnTaskListener{
         void onTaskClick(int position);
+        void onCompleteClick(int position);
     }
 
     public void addItem(Task task){
@@ -85,7 +87,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         notifyDataSetChanged();
     }
 
-    public void setItems(ArrayList<Task> tasks) {
+    public void addItems(List<Task> tasks){
+        taskList.addAll(tasks);
+        notifyDataSetChanged();
+    }
+
+    public void setItems(List<Task> tasks) {
         taskList = tasks;
         notifyDataSetChanged();
     }

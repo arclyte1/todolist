@@ -5,11 +5,12 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 class TaskRepository {
 
     private TaskDao mTaskDao;
-    private LiveData<ArrayList<Task>> mAllTasks;
+    private LiveData<List<Task>> mAllTasks;
 
     TaskRepository(Application application) {
         TaskRoomDatabase db = TaskRoomDatabase.getDatabase(application);
@@ -17,7 +18,7 @@ class TaskRepository {
         mAllTasks = mTaskDao.getTasks();
     }
 
-    LiveData<ArrayList<Task>> getAllTasks() {
+    LiveData<List<Task>> getAllTasks() {
         return mAllTasks;
     }
 
@@ -26,4 +27,17 @@ class TaskRepository {
             mTaskDao.insert(task);
         });
     }
+
+    void delete(Task task) {
+        TaskRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mTaskDao.delete(task);
+        });
+    }
+
+    void update(Task task) {
+        TaskRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mTaskDao.update(task);
+        });
+    }
+
 }

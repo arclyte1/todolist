@@ -8,12 +8,14 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "task_table")
 public class Task {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private int id;
+
     @NonNull
     @ColumnInfo(name = "task")
     private String task;
 
-    @NonNull
     @ColumnInfo(name = "isCompleted")
     private boolean isCompleted;
 
@@ -36,5 +38,13 @@ public class Task {
 
     public boolean isCompleted() {
         return isCompleted;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
