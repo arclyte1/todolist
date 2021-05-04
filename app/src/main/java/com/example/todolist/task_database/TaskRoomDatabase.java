@@ -1,4 +1,4 @@
-package com.example.todolist.task;
+package com.example.todolist.task_database;
 
 import android.content.Context;
 
@@ -7,6 +7,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+
+import com.example.todolist.task.Task;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

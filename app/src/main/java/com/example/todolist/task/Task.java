@@ -6,7 +6,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "task_table")
-public class Task {
+public class Task implements Comparable<Task>{
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -46,5 +46,15 @@ public class Task {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        if (this.isCompleted() && !o.isCompleted())
+            return 1;
+        else if (!this.isCompleted() && o.isCompleted())
+            return -1;
+        else
+            return 0;
     }
 }

@@ -1,22 +1,21 @@
-package com.example.todolist.task;
+package com.example.todolist.task_adapter;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.OnTaskListener;
 import com.example.todolist.R;
+import com.example.todolist.task.Task;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
@@ -77,11 +76,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 
-    public interface OnTaskListener{
-        void onTaskClick(int position);
-        void onCompleteClick(int position);
-    }
-
     public void addItem(Task task){
         taskList.add(task);
         notifyDataSetChanged();
@@ -94,6 +88,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public void setItems(List<Task> tasks) {
         taskList = tasks;
+        Collections.sort(taskList);
         notifyDataSetChanged();
     }
 
