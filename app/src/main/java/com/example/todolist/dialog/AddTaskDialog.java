@@ -82,13 +82,18 @@ public class AddTaskDialog extends DialogFragment{
                 String name = taskName.getText().toString();
                 String notify = taskNotify.getText().toString();
                 if (!name.isEmpty()) {
-                    int notifyInt = 0;
-                    if (!notify.isEmpty())
-                        notifyInt = Integer.parseInt(notify);
-                    Task task = new Task(name, date, notifyInt);
-                    taskListener.addTask(task);
-                }
-                onDestroyView();
+                    if (name.length() > 20)
+                        Toast.makeText(getContext(), "Имя задачи не больше 20 символов", Toast.LENGTH_LONG).show();
+                    else {
+                        int notifyInt = 0;
+                        if (!notify.isEmpty())
+                            notifyInt = Integer.parseInt(notify);
+                        Task task = new Task(name, date, notifyInt);
+                        taskListener.addTask(task);
+                        onDestroyView();
+                    }
+                } else
+                    onDestroyView();
             }
         });
         return v;

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -82,11 +83,19 @@ public class EditTaskDialog extends DialogFragment {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                task.setTask(taskName.getText().toString());
-                task.setDate(date);
-                task.setNotify(Integer.parseInt(taskNotify.getText().toString()));
-                taskListener.updateTask(task);
-                onDestroyView();
+                String name = taskName.getText().toString();
+                if (!name.isEmpty()) {
+                    if (name.length() > 20)
+                        Toast.makeText(getContext(), "Имя задачи не больше 20 символов", Toast.LENGTH_LONG).show();
+                    else {
+                        task.setTask(name);
+                        task.setDate(date);
+                        task.setNotify(Integer.parseInt(taskNotify.getText().toString()));
+                        taskListener.updateTask(task);
+                        onDestroyView();
+                    }
+                } else
+                    onDestroyView();
             }
         });
         return v;
