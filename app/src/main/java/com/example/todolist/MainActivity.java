@@ -1,31 +1,47 @@
 package com.example.todolist;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
-import com.example.todolist.dialog.OnAddTaskDialog;
-import com.example.todolist.dialog.OnClickTaskDialog;
+import com.example.todolist.dialog.AddTaskDialog;
+import com.example.todolist.dialog.ClickTaskDialog;
 import com.example.todolist.task.Task;
 import com.example.todolist.task_adapter.TaskAdapter;
+import com.example.todolist.task_broadcast.TaskBroadcast;
 import com.example.todolist.task_database.TaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements OnTaskListener {
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements TaskListener {
 
     private TaskViewModel taskViewModel;
     private TaskAdapter taskAdapter;
     private RecyclerView recyclerView;
     private FloatingActionButton button;
+
+    private Date date;
+    private DateFormat dateFormat;
 
 
 
@@ -53,44 +69,69 @@ public class MainActivity extends AppCompatActivity implements OnTaskListener {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addTask(v);
+                addTaskDialog(v);
             }
         });
+
+        // Notifications
+        createNotificationChannel();
+        //setNotifications();
     }
 
-    private void addTask(View v) {
-        OnAddTaskDialog onAddTaskDialog = new OnAddTaskDialog(this);
-        onAddTaskDialog.show(getSupportFragmentManager(), "Add dialog");
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "TaskReminderChannel";
+            String description = "Channel for Task Reminder";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyTask", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
-    public void updateTask(Task task) {
-        taskViewModel.update(task);
+    private void setNotifications() {
+        Intent intent = new Intent(MainActivity.this, TaskBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY ,pendingIntent);
+    }
+
+    private void addTaskDialog(View v) {
+        AddTaskDialog addTaskDialog = new AddTaskDialog(this);
+        addTaskDialog.show(getSupportFragmentManager(), "Add dialog");
     }
 
     @Override
-    public void onTaskClick(int position) {
-        OnClickTaskDialog onClickTaskDialog = new OnClickTaskDialog(this, taskViewModel.getAllTasks().getValue().get(position));
-        onClickTaskDialog.show(getSupportFragmentManager(), "Click task dialog");
+    public void taskClick(int position) {
+        ClickTaskDialog clickTaskDialog = new ClickTaskDialog(this, taskViewModel.getAllTasks().getValue().get(position));
+        clickTaskDialog.show(getSupportFragmentManager(), "Click task dialog");
     }
 
     @Override
-    public void onCompleteClick(int position) {
+    public void completeClick(int position) {
         updateTask(taskViewModel.getAllTasks().getValue().get(position));
     }
 
     @Override
-    public void onAddTask(Task task) {
+    public void addTask(Task task) {
         taskViewModel.insert(task);
+        Log.i("Added task", task.toString());
     }
 
     @Override
-    public void onDeleteTask(Task task) {
+    public void deleteTask(Task task) {
         taskViewModel.delete(task);
         Toast.makeText(this, "Task removed", Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onUpdateTask(Task task) {
-        updateTask(task);
+    public void updateTask(Task task) {
+        taskViewModel.update(task);
     }
+
 }

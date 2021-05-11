@@ -9,29 +9,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.todolist.OnTaskListener;
+import com.example.todolist.TaskListener;
 import com.example.todolist.R;
 import com.example.todolist.task.Task;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private List<Task> taskList = new ArrayList<>();
-    private OnTaskListener onTaskListener;
+    private TaskListener taskListener;
 
-    public TaskAdapter(OnTaskListener onTaskListener) {
-        this.onTaskListener = onTaskListener;
+    public TaskAdapter(TaskListener taskListener) {
+        this.taskListener = taskListener;
     }
 
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task, parent, false);
-        return new TaskViewHolder(view, onTaskListener);
+        return new TaskViewHolder(view, taskListener);
     }
 
     @Override
@@ -48,13 +47,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         private TextView taskTextView;
         private CheckBox completedCheckBox;
-        private OnTaskListener onTaskListener;
+        private TaskListener taskListener;
 
-        public TaskViewHolder(@NonNull View itemView, OnTaskListener onTaskListener) {
+        public TaskViewHolder(@NonNull View itemView, TaskListener taskListener) {
             super(itemView);
             taskTextView = itemView.findViewById(R.id.task_text);
             completedCheckBox = itemView.findViewById(R.id.task_completed);
-            this.onTaskListener = onTaskListener;
+            this.taskListener = taskListener;
             itemView.setOnClickListener(this);
         }
 
@@ -65,14 +64,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 @Override
                 public void onClick(View v) {
                     task.setCompleted(((CheckBox) v).isChecked());
-                    onTaskListener.onCompleteClick(getAdapterPosition());
+                    taskListener.completeClick(getAdapterPosition());
                 }
             });
         }
 
         @Override
         public void onClick(View v) {
-            onTaskListener.onTaskClick(getAdapterPosition());
+            taskListener.taskClick(getAdapterPosition());
         }
     }
 
