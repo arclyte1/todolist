@@ -2,6 +2,7 @@ package com.example.todolist.dialog;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
@@ -28,9 +30,10 @@ public class AddTaskDialog extends DialogFragment{
     private Button addButton;
     private TextView taskName;
     private Button dateButton;
-    private TextView taskNotify;
+    private Button notifyButton;
     private TaskListener taskListener;
     private long date;
+    private long notify;
 
     public AddTaskDialog(TaskListener taskListener) {
         this.taskListener = taskListener;
@@ -47,25 +50,41 @@ public class AddTaskDialog extends DialogFragment{
         View v = inflater.inflate(R.layout.add_task_dialog, container, false);
         taskName = v.findViewById(R.id.task_name);
         dateButton = v.findViewById(R.id.date_button);
-        taskNotify = v.findViewById(R.id.task_notify);
-        // Date Picker
+        notifyButton = v.findViewById(R.id.notify_date_button);
+        // Date Picker for date
         date = 0;
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar dateAndTime = Calendar.getInstance();
+                long savedDate = date;
+                if (date != 0)
+                    dateAndTime.setTimeInMillis(date);
+
                 new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         String mDate = year + String.format("%02d", month + 1) + String.format("%02d", dayOfMonth);
-                        Log.i("Selected Date",year + "/" + (month + 1) + "/" + dayOfMonth);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
                         try {
                             date = simpleDateFormat.parse(mDate).getTime();
-                            Log.i("Selected Date (Millis)", Long.toString(date));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
+                        new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                date += hourOfDay * 60 * 60 * 1000 + minute * 60 * 1000;
+                                if (date < Calendar.getInstance().getTimeInMillis() && date != 0) {
+                                    Toast.makeText(getContext(), "Введена некорректная дата", Toast.LENGTH_LONG).show();
+                                    date = savedDate;
+                                }
+                            }
+                        },
+                                dateAndTime.get(Calendar.HOUR),
+                                dateAndTime.get(Calendar.MINUTE),
+                                true
+                        ).show();
                     }
                 },
                         dateAndTime.get(Calendar.YEAR),
@@ -74,21 +93,62 @@ public class AddTaskDialog extends DialogFragment{
                         .show();
             }
         });
+
+        // Date Picker for notify
+        notify = 0;
+        notifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar dateAndTime = Calendar.getInstance();
+                long savedNotify = notify;
+                if (notify != 0)
+                    dateAndTime.setTimeInMillis(notify);
+
+                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        String mDate = year + String.format("%02d", month + 1) + String.format("%02d", dayOfMonth);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+                        try {
+                            notify = simpleDateFormat.parse(mDate).getTime();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                notify += hourOfDay * 60 * 60 * 1000 + minute * 60 * 1000;
+                                if (notify < Calendar.getInstance().getTimeInMillis() && notify != 0) {
+                                    Toast.makeText(getContext(), "Введена некорректная дата", Toast.LENGTH_LONG).show();
+                                    notify = savedNotify;
+                                }
+                            }
+                        },
+                                dateAndTime.get(Calendar.HOUR),
+                                dateAndTime.get(Calendar.MINUTE),
+                                true
+                        ).show();
+                    }
+                },
+                        dateAndTime.get(Calendar.YEAR),
+                        dateAndTime.get(Calendar.MONTH),
+                        dateAndTime.get(Calendar.DAY_OF_MONTH))
+                        .show();
+            }
+        });
+
+
         // Add Task
         addButton = (Button)v.findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = taskName.getText().toString();
-                String notify = taskNotify.getText().toString();
                 if (!name.isEmpty()) {
-                    if (name.length() > 20)
-                        Toast.makeText(getContext(), "Имя задачи не больше 20 символов", Toast.LENGTH_LONG).show();
+                    if (name.length() > 30)
+                        Toast.makeText(getContext(), "Имя задачи не больше 30 символов", Toast.LENGTH_LONG).show();
                     else {
-                        int notifyInt = 0;
-                        if (!notify.isEmpty())
-                            notifyInt = Integer.parseInt(notify);
-                        Task task = new Task(name, date, notifyInt);
+                        Task task = new Task(name, date, notify);
                         taskListener.addTask(task);
                         onDestroyView();
                     }

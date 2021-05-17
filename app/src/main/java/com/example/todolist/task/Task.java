@@ -29,13 +29,17 @@ public class Task implements Comparable<Task>{
 
     @NonNull
     @ColumnInfo
-    private int notify;
+    private long notify;
 
-    public Task(@NonNull String task, @NonNull long date, @NonNull int notify) {
+    @ColumnInfo
+    private boolean isNotified;
+
+    public Task(@NonNull String task, @NonNull long date, @NonNull long notify) {
         this.task = task;
         this.date = date;
         this.notify = notify;
         this.isCompleted = false;
+        this.isNotified = false;
     }
 
     public void setTask(@NonNull String task) {
@@ -71,12 +75,20 @@ public class Task implements Comparable<Task>{
         this.date = date;
     }
 
-    public int getNotify() {
+    public long getNotify() {
         return notify;
     }
 
-    public void setNotify(int notify) {
+    public void setNotify(long notify) {
         this.notify = notify;
+    }
+
+    public boolean isNotified() {
+        return isNotified;
+    }
+
+    public void setNotified(boolean notified) {
+        isNotified = notified;
     }
 
     @Override
@@ -85,8 +97,20 @@ public class Task implements Comparable<Task>{
             return 1;
         else if (!this.isCompleted() && o.isCompleted())
             return -1;
-        else
-            return 0;
+        else {
+            if (this.getDate() == 0 && o.getDate() != 0)
+                return 1;
+            else if (this.getDate() != 0 && o.getDate() == 0)
+                return -1;
+            else {
+                if (this.getDate() < o.getDate())
+                    return -1;
+                else if (this.getDate() > o.getDate())
+                    return 1;
+                else
+                    return 0;
+            }
+        }
     }
 
     @Override

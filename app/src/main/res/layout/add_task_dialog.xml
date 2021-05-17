@@ -36,58 +36,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Добавить"
         android:width="200dp"
+        android:text="Добавить"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_notify" />
+        app:layout_constraintTop_toBottomOf="@+id/notify_date_button" />
 
     <Button
         android:id="@+id/date_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Выбрать дату"
         android:width="200dp"
+        android:text="Дата выполнения"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/task_name" />
 
-    <EditText
-        android:id="@+id/task_notify"
-        android:layout_width="50dp"
-        android:layout_height="45dp"
+    <Button
+        android:id="@+id/notify_date_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="0"
-        android:inputType="number"
+        android:width="200dp"
+        android:text="Дата напоминания"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.62"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_button" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Напомнить за"
-        app:layout_constraintEnd_toStartOf="@+id/task_notify"
-        app:layout_constraintTop_toBottomOf="@+id/date_button" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="20dp"
-
-        android:text="дней"
-        app:layout_constraintStart_toEndOf="@+id/task_notify"
-        app:layout_constraintTop_toBottomOf="@+id/date_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -11,9 +12,9 @@ import android.os.Bundle;
 
 import com.example.todolist.dialog.AddTaskDialog;
 import com.example.todolist.dialog.ClickTaskDialog;
+import com.example.todolist.notification_service.AlarmReceiver;
 import com.example.todolist.task.Task;
 import com.example.todolist.task_adapter.TaskAdapter;
-import com.example.todolist.task_broadcast.TaskBroadcast;
 import com.example.todolist.task_database.TaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     private TaskAdapter taskAdapter;
     private RecyclerView recyclerView;
     private FloatingActionButton button;
+    private TextView emptyTasks;
 
     private Date date;
     private DateFormat dateFormat;
@@ -50,7 +53,9 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        taskAdapter =  new TaskAdapter(this);
+        emptyTasks = (TextView) findViewById(R.id.empty_tasks);
+
+        taskAdapter =  new TaskAdapter(this, emptyTasks);
 
         // Init task recycler view
         recyclerView = findViewById(R.id.task_view);
@@ -75,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
 
         // Notifications
         createNotificationChannel();
-        //setNotifications();
+        setUpNotifications();
     }
 
     private void createNotificationChannel() {
@@ -90,15 +95,12 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         }
     }
 
-    private void setNotifications() {
-        Intent intent = new Intent(MainActivity.this, TaskBroadcast.class);
+    private void setUpNotifications() {
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY ,pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000 ,pendingIntent);
     }
 
     private void addTaskDialog(View v) {
@@ -119,18 +121,19 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
 
     @Override
     public void addTask(Task task) {
-        taskViewModel.insert(task);
         Log.i("Added task", task.toString());
+        taskViewModel.insert(task);
     }
 
     @Override
     public void deleteTask(Task task) {
+        Log.i("Deleted task", task.toString());
         taskViewModel.delete(task);
-        Toast.makeText(this, "Task removed", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void updateTask(Task task) {
+        Log.i("Updated task", task.toString());
         taskViewModel.update(task);
     }
 

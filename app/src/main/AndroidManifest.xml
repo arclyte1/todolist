@@ -22,10 +22,13 @@
         </activity>
 
         <receiver android:name=".task_broadcast.TaskBroadcast"/>
+        <receiver android:name=".notification_service.AlarmReceiver"/>
+        <service android:name=".notification_service.NotificationService"/>
     </application>
 
     <uses-permission
         android:name="android.permission.SET_ALARM"
         tools:node="remove" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>
