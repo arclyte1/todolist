@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <Button
+        android:id="@+id/every_day"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_500"
+        android:textSize="15sp"
+        android:text="Каждый день"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/in_2_days"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_500"
+        android:textSize="15sp"
+        android:text="Раз в 2 дня"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/every_day"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/every_week"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_500"
+        android:textSize="15sp"
+        android:text="Каждую неделю"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/in_2_days"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/never"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_500"
+        android:textSize="15sp"
+        android:text="Не повторять"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/every_week"
+        style="?android:attr/borderlessButtonStyle"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

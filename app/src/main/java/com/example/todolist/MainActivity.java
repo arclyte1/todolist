@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,15 +17,20 @@ import com.example.todolist.notification_service.AlarmReceiver;
 import com.example.todolist.task.Task;
 import com.example.todolist.task_adapter.TaskAdapter;
 import com.example.todolist.task_database.TaskViewModel;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.TextView;
@@ -43,11 +49,6 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     private FloatingActionButton button;
     private TextView emptyTasks;
 
-    private Date date;
-    private DateFormat dateFormat;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,19 +58,19 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
 
         taskAdapter =  new TaskAdapter(this, emptyTasks);
 
-        // Init task recycler view
+        // Task Recycler View
         recyclerView = findViewById(R.id.task_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(taskAdapter);
 
-        // Init taskViewModel
+        // Task View Model
         taskViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
                 .create(TaskViewModel.class);
         taskViewModel.getAllTasks().observe(this, tasks -> {
             taskAdapter.setItems(tasks);
         });
 
-        // Init add button
+        // Init Add Button
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,8 +80,16 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         });
 
         // Notifications
-        createNotificationChannel();
         setUpNotifications();
+    }
+
+    private void setUpNotifications() {
+        createNotificationChannel();
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000 ,pendingIntent);
     }
 
     private void createNotificationChannel() {
@@ -95,14 +104,6 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         }
     }
 
-    private void setUpNotifications() {
-        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Calendar calendar = Calendar.getInstance();
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000 ,pendingIntent);
-    }
-
     private void addTaskDialog(View v) {
         AddTaskDialog addTaskDialog = new AddTaskDialog(this);
         addTaskDialog.show(getSupportFragmentManager(), "Add dialog");
@@ -112,11 +113,6 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     public void taskClick(int position) {
         ClickTaskDialog clickTaskDialog = new ClickTaskDialog(this, taskViewModel.getAllTasks().getValue().get(position));
         clickTaskDialog.show(getSupportFragmentManager(), "Click task dialog");
-    }
-
-    @Override
-    public void completeClick(int position) {
-        updateTask(taskViewModel.getAllTasks().getValue().get(position));
     }
 
     @Override

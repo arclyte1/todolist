@@ -7,62 +7,74 @@
     android:layout_height="match_parent"
     android:padding="15dp">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Добавить задачу"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/task_name"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="10"
         android:inputType="textPersonName"
         android:hint="Задача"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:width="200dp"
+        android:textColor="@color/purple_500"
+        android:textSize="15sp"
         android:text="Добавить"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notify_date_button" />
+        app:layout_constraintTop_toBottomOf="@+id/menu_layout"
+        style="?android:attr/borderlessButtonStyle"/>
 
-    <Button
-        android:id="@+id/date_button"
-        android:layout_width="wrap_content"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/menu_layout"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:width="200dp"
-        android:text="Дата выполнения"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_name" />
+        app:layout_constraintTop_toBottomOf="@+id/task_name"
+        android:layout_marginTop="8dp">
 
-    <Button
-        android:id="@+id/notify_date_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:width="200dp"
-        android:text="Дата напоминания"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_button" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/date_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="67dp"
+            android:layout_height="50dp"
+            app:icon="@drawable/baseline_event_white_36"
+            app:iconTint="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/repeat_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="68dp"
+            android:layout_height="50dp"
+            app:icon="@drawable/baseline_published_with_changes_white_36"
+            app:iconTint="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/notify_date_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="68dp"
+            android:layout_height="50dp"
+            app:icon="@drawable/baseline_alarm_white_36"
+            app:iconTint="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/repeat_button"
+            app:layout_constraintStart_toEndOf="@+id/date_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

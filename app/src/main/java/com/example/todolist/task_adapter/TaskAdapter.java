@@ -1,6 +1,7 @@
 package com.example.todolist.task_adapter;
 
 import android.app.PendingIntent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,12 +66,23 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         public void bind(Task task){
             taskTextView.setText(task.getTask());
+
+            if (task.getDate() != 0 && task.getDate() < Calendar.getInstance().getTimeInMillis() && !task.isCompleted())
+                taskTextView.setTextColor(Color.rgb(255, 100, 100));
+            else
+                taskTextView.setTextColor(Color.rgb(127, 127, 127));
+
             completedCheckBox.setChecked(task.isCompleted());
             completedCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    task.setCompleted(((CheckBox) v).isChecked());
-                    taskListener.completeClick(getAdapterPosition());
+                    if (task.getRepeat() == 0)
+                        task.setCompleted(((CheckBox) v).isChecked());
+                    else {
+                        task.setDate(task.getDate() + 24 * 60 * 60 * 1000 * (long)task.getRepeat());
+                        task.setNotify(task.getNotify() + 24 * 60 * 60 * 1000 * (long)task.getRepeat());
+                    }
+                    taskListener.updateTask(task);
                 }
             });
 

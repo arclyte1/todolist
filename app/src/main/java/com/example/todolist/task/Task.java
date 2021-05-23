@@ -34,12 +34,16 @@ public class Task implements Comparable<Task>{
     @ColumnInfo
     private boolean isNotified;
 
-    public Task(@NonNull String task, @NonNull long date, @NonNull long notify) {
+    @ColumnInfo
+    private int repeat;
+
+    public Task(@NonNull String task, @NonNull long date, @NonNull long notify, int repeat) {
         this.task = task;
         this.date = date;
         this.notify = notify;
         this.isCompleted = false;
         this.isNotified = false;
+        this.repeat = repeat;
     }
 
     public void setTask(@NonNull String task) {
@@ -91,6 +95,14 @@ public class Task implements Comparable<Task>{
         isNotified = notified;
     }
 
+    public int getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(int repeat) {
+        this.repeat = repeat;
+    }
+
     @Override
     public int compareTo(Task o) {
         if (this.isCompleted() && !o.isCompleted())
@@ -121,6 +133,8 @@ public class Task implements Comparable<Task>{
                 ", isCompleted=" + isCompleted +
                 ", date=" + date +
                 ", notify=" + notify +
+                ", isNotified=" + isNotified +
+                ", repeat=" + repeat +
                 '}';
     }
 }
